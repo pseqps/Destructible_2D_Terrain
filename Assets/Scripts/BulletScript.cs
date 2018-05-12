@@ -10,8 +10,6 @@ public class BulletScript : MonoBehaviour {
 
     // Use this for initializationz
     void Start () {
-        //Debug.Log("BULLET ALIVE");
-        //forceX = 5;
         terrain = GameObject.Find("Terrain");
 	}
 
