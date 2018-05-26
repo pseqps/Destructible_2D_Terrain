@@ -24,13 +24,12 @@ public class TerrainScript : MonoBehaviour {
     public int sliceSize;
     public float maxY;
     public float minY;
-   // public GameObject explosion;
 
     // Use this for initialization
     void Start () {
 
-
-        //mesh = new Mesh();
+        //ArrayList al;
+        //al = MakeTerrMap();
         /*
         terrMap = new Vector3[11]; //массив-карта
         terrMap[0] = new Vector3(-15, 0, 0);
@@ -45,22 +44,24 @@ public class TerrainScript : MonoBehaviour {
         terrMap[9] = new Vector3(8, -3, 0);
         terrMap[10] = new Vector3(15, -3, 0);
         */
+
         /*
-        terrMap = new Vector3[5]; //массив-карта
+        terrMap = new Vector3[2]; //массив-карта
         terrMap[0] = new Vector3(-15, 0, 0);
-        terrMap[1] = new Vector3(-8, 0, 0);
-        terrMap[2] = new Vector3(0, 0, 0);
-        terrMap[3] = new Vector3(8, 0, 0);
-        terrMap[4] = new Vector3(15, 0, 0);
+        terrMap[1] = new Vector3(15, 0, 0);
         */
-		
+
+        terrMap = (Vector3[]) MakeTerrMap().ToArray(typeof(Vector3));
+
+        /*
         terrMap = new Vector3[5]; //массив-карта
         terrMap[0] = new Vector3(-8, 0, 0);
         terrMap[1] = new Vector3(-4, 0, 0);
         terrMap[2] = new Vector3(0, 0, 0);
         terrMap[3] = new Vector3(4, 0, 0);
         terrMap[4] = new Vector3(8, 0, 0);
-        
+        */
+
         maxY = terrMap[0].y;
         for (int i = 0; i<terrMap.Length; i++)
         if (terrMap[i].y > maxY) maxY = terrMap[i].y;
@@ -68,6 +69,22 @@ public class TerrainScript : MonoBehaviour {
         RecalculateTerr();
     }
 
+    
+    private ArrayList MakeTerrMap ()
+    {
+        ArrayList terrMapList = new ArrayList();
+        Texture2D txtr = (Texture2D) GetComponent<MeshRenderer>().material.mainTexture;
+
+        for (int i = 0; i <= txtr.width; i+= sliceSize)
+        {
+            int j = txtr.height;
+            while (j-- > 0 && txtr.GetPixel(i, j).a == 0) {  }
+            Debug.Log(i + " " + j);
+            terrMapList.Add(new Vector3(i/1, j/1));
+        }
+            return terrMapList;
+    }
+    
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // Debug.Log("ENTER");
@@ -75,11 +92,15 @@ public class TerrainScript : MonoBehaviour {
 	
 	void RecalculateTerr ()
 	{
+        Debug.Log("<<<<<<<" + terrMap.Length);
+
+
+        //TODO переместить это в нормальное место
         mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
 
-
         int vertLenght = terrMap.Length * 2 + 1; //количество вершин
+
         Vector3[] vertices = new Vector3[vertLenght];
         int[] tri = new int[vertLenght * 6 - 3]; //количество треугольников
 
@@ -104,8 +125,8 @@ public class TerrainScript : MonoBehaviour {
 
         Vector2[] uv = new Vector2[vertLenght];
         uv[0] = new Vector2(0, 0);
-		float x;// = vertices[1].x;
-		float y;// = minY;;
+		float x;
+		float y;
 		float dx = vertices[vertices.Length-1].x - vertices[1].x;
 		//Debug.Log("0:" + vertices[1].x+" max:" + vertices[vertices.Length-1].x + " dx:"+ dx);
 		float dy = maxY - minY;
@@ -201,8 +222,8 @@ public class TerrainScript : MonoBehaviour {
             Array.Copy(terrMap, 0, rejectedMap, 0, firstDel + 1 - leftCorner);	
             Array.Copy(terrMap, i + 1, rejectedMap, firstDel + 1 - leftCorner, terrMap.Length - i - 1 + rightCorner);//
 		
-			Debug.Log("========rejectedMap========");
-			foreach (Vector3 v in rejectedMap) Debug.Log(v.x+" "+v.y);
+			//Debug.Log("========rejectedMap========");
+			foreach (Vector3 v in rejectedMap);
             //Добавляем в мап
             Vector3[] holeMapArr = (Vector3[])holeMap.ToArray(typeof(Vector3));
             terrMap = new Vector3[rejectedMap.Length + holeMapArr.Length];
