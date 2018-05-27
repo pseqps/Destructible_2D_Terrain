@@ -24,6 +24,7 @@ public class TerrainScript : MonoBehaviour {
     public int sliceSize;
     public float maxY;
     public float minY;
+    public float terrain_texture_scale;
 
     // Use this for initialization
     void Start () {
@@ -62,10 +63,12 @@ public class TerrainScript : MonoBehaviour {
         terrMap[4] = new Vector3(8, 0, 0);
         */
 
-        maxY = terrMap[0].y;
+        maxY = terrMap[0].y; // самая высокая точка меша
         for (int i = 0; i<terrMap.Length; i++)
         if (terrMap[i].y > maxY) maxY = terrMap[i].y;
-		
+
+        minY = 0; // самая низкая точка меша
+
         RecalculateTerr();
     }
 
@@ -75,14 +78,16 @@ public class TerrainScript : MonoBehaviour {
         ArrayList terrMapList = new ArrayList();
         Texture2D txtr = (Texture2D) GetComponent<MeshRenderer>().material.mainTexture;
 
-        for (int i = 0; i <= txtr.width; i+= sliceSize)
+        for (int i = 0; i <= txtr.width; i+= sliceSize* (int)terrain_texture_scale)
         {
             int j = txtr.height;
             while (j-- > 0 && txtr.GetPixel(i, j).a == 0) {  }
-            Debug.Log(i + " " + j);
-            terrMapList.Add(new Vector3(i/1, j/1));
+            //while (j-- > 0 && txtr.GetPixel(i, j).a < 0.5) {  }
+            //Debug.Log(i + " " + j);
+            terrMapList.Add(new Vector3((float)i/ terrain_texture_scale, (float)j / terrain_texture_scale));
+            Debug.Log((float)i / terrain_texture_scale + " "+ (float)j / terrain_texture_scale);
         }
-            return terrMapList;
+        return terrMapList;
     }
     
     private void OnCollisionEnter2D(Collision2D collision)
