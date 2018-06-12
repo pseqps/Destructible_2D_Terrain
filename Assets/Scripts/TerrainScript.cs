@@ -21,7 +21,7 @@ public class TerrainScript : MonoBehaviour {
     Mesh mesh;
     Vector3[] terrMap;
 	
-    public int sliceSize;
+    public int holeSliceCount;
     public float maxY;
     public float minY;
     public float terrain_texture_scale;
@@ -29,39 +29,7 @@ public class TerrainScript : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-        //ArrayList al;
-        //al = MakeTerrMap();
-        /*
-        terrMap = new Vector3[11]; //массив-карта
-        terrMap[0] = new Vector3(-15, 0, 0);
-        terrMap[1] = new Vector3(-8, 0, 0);
-        terrMap[2] = new Vector3(-6, 0, 0);
-        terrMap[3] = new Vector3(-4, 0, 0);
-        terrMap[4] = new Vector3(-2, 0, 0);
-        terrMap[5] = new Vector3(0, -3, 0);
-        terrMap[6] = new Vector3(2, 0, 0);
-        terrMap[7] = new Vector3(4, -3, 0);
-        terrMap[8] = new Vector3(6, 0, 0);
-        terrMap[9] = new Vector3(8, -3, 0);
-        terrMap[10] = new Vector3(15, -3, 0);
-        */
-
-        /*
-        terrMap = new Vector3[2]; //массив-карта
-        terrMap[0] = new Vector3(-15, 0, 0);
-        terrMap[1] = new Vector3(15, 0, 0);
-        */
-
         terrMap = (Vector3[]) MakeTerrMap().ToArray(typeof(Vector3));
-
-        /*
-        terrMap = new Vector3[5]; //массив-карта
-        terrMap[0] = new Vector3(-8, 0, 0);
-        terrMap[1] = new Vector3(-4, 0, 0);
-        terrMap[2] = new Vector3(0, 0, 0);
-        terrMap[3] = new Vector3(4, 0, 0);
-        terrMap[4] = new Vector3(8, 0, 0);
-        */
 
         maxY = terrMap[0].y; // самая высокая точка меша
         for (int i = 0; i<terrMap.Length; i++)
@@ -78,7 +46,7 @@ public class TerrainScript : MonoBehaviour {
         ArrayList terrMapList = new ArrayList();
         Texture2D txtr = (Texture2D) GetComponent<MeshRenderer>().material.mainTexture;
 
-        for (int i = 0; i <= txtr.width; i+= sliceSize* (int)terrain_texture_scale)
+        for (int i = 0; i <= txtr.width; i+= holeSliceCount* (int)terrain_texture_scale)
         {
             int j = txtr.height;
             while (j-- > 0 && txtr.GetPixel(i, j).a == 0) {  }
@@ -168,20 +136,20 @@ public class TerrainScript : MonoBehaviour {
         int firstDel = 0;
         float x1 = terrMap[0].x, x2 = terrMap[1].x;
         //float sliceX = expTransf.position.x - explDiam / 2;
-        float sliceX = expTransf.position.x - explDiam / 2 - explDiam / sliceSize;
+        float sliceX = expTransf.position.x - explDiam / 2 - explDiam / holeSliceCount;
 		float maxX = terrMap[terrMap.Length-1].x;
         ArrayList holeMap = new ArrayList();
 
-        for (int j = 0; (j <= sliceSize); j++) { //выполняем, пока не переберем все слайсы взрыва
+        for (int j = 0; (j <= holeSliceCount); j++) { //выполняем, пока не переберем все слайсы взрыва
             
-			sliceX += explDiam / sliceSize;
+			sliceX += explDiam / holeSliceCount;
 
 			//if (sliceX > terrMap[terrMap.Length-1].x) sliceX = terrMap[terrMap.Length-1].x; //обработка правого края
 			// не работает!!! if (sliceX < terrMap[0].x) sliceX = terrMap[0].x; //обработка левого края
 			if (sliceX > maxX) // обработка правого края
 			{
 				sliceX = maxX;
-				j = sliceSize;
+				j = holeSliceCount;
 				rightCorner--;
 			}
 			
@@ -191,7 +159,7 @@ public class TerrainScript : MonoBehaviour {
 				continue; //обработка левого края
 				
 			}
-			//if ((sliceX + explDiam / sliceSize) < terrMap[0].x) sliceX = terrMap[0].x;
+			//if ((sliceX + explDiam / holeSliceCount) < terrMap[0].x) sliceX = terrMap[0].x;
 			
             while (!((x1 <= sliceX) & (x2 >= sliceX)))
 				{
@@ -244,12 +212,12 @@ public class TerrainScript : MonoBehaviour {
             holeMap.Clear();
             for (int j = 0; j < terrMap.Length-1; j++)
             {
-                if (Math.Abs(terrMap[j + 1].x - terrMap[j].x) >= explDiam / sliceSize)
+                if (Math.Abs(terrMap[j + 1].x - terrMap[j].x) >= explDiam / holeSliceCount)
                 {
                     holeMap.Add(terrMap[j]);
                    // Debug.Log("=========================================");
                 }
-                //Debug.Log(terrMap[j].x + " - " + terrMap[j + 1].x + " = " + (Math.Abs(terrMap[j + 1].x - terrMap[j].x)) + " > " + explDiam / sliceSize);
+                //Debug.Log(terrMap[j].x + " - " + terrMap[j + 1].x + " = " + (Math.Abs(terrMap[j + 1].x - terrMap[j].x)) + " > " + explDiam / holeSliceCount);
             }
             terrMap = (Vector3[])holeMap.ToArray(typeof(Vector3));
             Debug.Log(holeMap.Count+" "+terrMap.Length);
