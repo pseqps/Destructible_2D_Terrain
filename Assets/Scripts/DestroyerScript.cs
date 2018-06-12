@@ -11,6 +11,7 @@ public class DestroyerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        //gameObject.transform.position = Input.mousePosition;
+        gameObject.transform.position = Input.mousePosition;
+    }
 }
