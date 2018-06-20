@@ -53,7 +53,7 @@ public class TerrainScript : MonoBehaviour {
             //while (j-- > 0 && txtr.GetPixel(i, j).a < 0.5) {  }
             //Debug.Log(i + " " + j);
             terrMapList.Add(new Vector3((float)i/ terrain_texture_scale, (float)j / terrain_texture_scale));
-            Debug.Log((float)i / terrain_texture_scale + " "+ (float)j / terrain_texture_scale);
+            //Debug.Log((float)i / terrain_texture_scale + " "+ (float)j / terrain_texture_scale);
         }
         return terrMapList;
     }
@@ -65,9 +65,6 @@ public class TerrainScript : MonoBehaviour {
 	
 	void RecalculateTerr ()
 	{
-        Debug.Log("<<<<<<<" + terrMap.Length);
-
-
         //TODO переместить это в нормальное место
         mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
