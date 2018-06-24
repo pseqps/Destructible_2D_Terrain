@@ -15,13 +15,12 @@ public class BulletScript : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Debug.Log("ENTER");
+        // при столкновении снаряда с повехностью делаем дырку и удаляем снаряд
         if (collision.gameObject.name == "Terrain")
         {
             collision.gameObject.GetComponent<TerrainScript>().TerrainHole(gameObject, explDiam);
             Destroy(gameObject);
         }
-        //Destroy(gameObject);
     }
 
     // Update is called once per frame

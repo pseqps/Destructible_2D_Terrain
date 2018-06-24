@@ -21,7 +21,7 @@ public class GunScript : MonoBehaviour {
 
     private void OnMouseDown()
     {
-        //при нажатии - дырявим террейн. У объекта должен быть коллайдер
+        //при нажатии - дырявим поверхность. У объекта должен быть коллайдер
         Fire(bulType);
     }
 
